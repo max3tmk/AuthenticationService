@@ -1,16 +1,9 @@
-FROM openjdk:17-slim
-
+FROM eclipse-temurin:17-jre-alpine AS base
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 WORKDIR /app
-
 COPY target/authentication-service.jar app.jar
-
-ENV DB_HOST=localhost
-ENV DB_PORT=5432
-ENV DB_NAME=innowise
-ENV DB_USERNAME=postgres
-ENV DB_PASSWORD=postgres
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/innowise
-
+USER root
+RUN apk update && apk add --no-cache curl
+USER appuser
 EXPOSE 8080
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
